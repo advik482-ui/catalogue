@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Clean White Background with Teal Accents */
+:root {
+  /* Reverted to clean white backgrounds with teal accents */
+  --background: 255 255 255; /* #ffffff - clean white background */
+  --foreground: 15 23 42; /* #0f172a - dark text */
+  --card: 255 255 255; /* #ffffff - white cards */
+  --card-foreground: 15 23 42; /* #0f172a */
+  --popover: 255 255 255; /* #ffffff */
+  --popover-foreground: 15 23 42; /* #0f172a */
+  --primary: 20 184 166; /* #14b8a6 - teal primary */
+  --primary-foreground: 255 255 255; /* #ffffff - white text on teal */
+  --secondary: 248 250 252; /* #f8fafc - very light gray */
+  --secondary-foreground: 15 23 42; /* #0f172a */
+  --muted: 248 250 252; /* #f8fafc - light muted background */
+  --muted-foreground: 100 116 139; /* #64748b - muted text */
+  --accent: 45 212 191; /* #2dd4bf - light teal accent */
+  --accent-foreground: 15 23 42; /* #0f172a */
+  --destructive: 239 68 68; /* #ef4444 - red */
+  --destructive-foreground: 255 255 255; /* #ffffff */
+  --border: 226 232 240; /* #e2e8f0 - light border */
+  --input: 255 255 255; /* #ffffff - white input background */
+  --ring: 20 184 166; /* #14b8a6 - teal focus ring */
+  --radius: 0.5rem;
+
+  /* Clean teal-based chart colors */
+  --chart-1: 20 184 166; /* #14b8a6 - teal */
+  --chart-2: 45 212 191; /* #2dd4bf - light teal */
+  --chart-3: 94 234 212; /* #5eead4 - very light teal */
+  --chart-4: 153 246 228; /* #99f6e4 - pale teal */
+  --chart-5: 204 251 241; /* #ccfbf1 - very pale teal */
+
+  /* Clean white sidebar with teal accents */
+  --sidebar: 255 255 255; /* #ffffff - white sidebar */
+  --sidebar-foreground: 15 23 42; /* #0f172a */
+  --sidebar-primary: 20 184 166; /* #14b8a6 */
+  --sidebar-primary-foreground: 255 255 255; /* #ffffff */
+  --sidebar-accent: 45 212 191; /* #2dd4bf */
+  --sidebar-accent-foreground: 15 23 42; /* #0f172a */
+  --sidebar-border: 226 232 240; /* #e2e8f0 */
+  --sidebar-ring: 20 184 166; /* #14b8a6 */
+}
+
+.dark {
+  /* Dark mode with proper contrast */
+  --background: 15 23 42; /* #0f172a - dark background */
+  --foreground: 248 250 252; /* #f8fafc */
+  --card: 30 41 59; /* #1e293b */
+  --card-foreground: 248 250 252; /* #f8fafc */
+  --popover: 15 23 42; /* #0f172a */
+  --popover-foreground: 248 250 252; /* #f8fafc */
+  --primary: 45 212 191; /* #2dd4bf */
+  --primary-foreground: 15 23 42; /* #0f172a */
+  --secondary: 51 65 85; /* #334155 */
+  --secondary-foreground: 248 250 252; /* #f8fafc */
+  --muted: 30 41 59; /* #1e293b */
+  --muted-foreground: 148 163 184; /* #94a3b8 */
+  --accent: 94 234 212; /* #5eead4 */
+  --accent-foreground: 15 23 42; /* #0f172a */
+  --destructive: 239 68 68; /* #ef4444 */
+  --destructive-foreground: 248 250 252; /* #f8fafc */
+  --border: 51 65 85; /* #334155 */
+  --input: 30 41 59; /* #1e293b */
+  --ring: 45 212 191; /* #2dd4bf */
+
+  --chart-1: 45 212 191; /* #2dd4bf */
+  --chart-2: 94 234 212; /* #5eead4 */
+  --chart-3: 153 246 228; /* #99f6e4 */
+  --chart-4: 204 251 241; /* #ccfbf1 */
+  --chart-5: 240 253 250; /* #f0fdfa */
+
+  --sidebar: 15 23 42; /* #0f172a */
+  --sidebar-foreground: 248 250 252; /* #f8fafc */
+  --sidebar-primary: 45 212 191; /* #2dd4bf */
+  --sidebar-primary-foreground: 15 23 42; /* #0f172a */
+  --sidebar-accent: 94 234 212; /* #5eead4 */
+  --sidebar-accent-foreground: 15 23 42; /* #0f172a */
+  --sidebar-border: 51 65 85; /* #334155 */
+  --sidebar-ring: 45 212 191; /* #2dd4bf */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-medium;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
+  }
+}
+
+/* Updated utilities to use clean teal gradients */
+@layer utilities {
+  .shadow-marketplace {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  .shadow-marketplace-lg {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+  }
+}
