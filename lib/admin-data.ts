@@ -1,191 +1,34 @@
+      return await MainFirebaseService.getUser(userId)
 // Admin data management for the marketplace platform
 import type { CustomField } from "./field-builder"
 import { FirebaseService } from "./firebase"
 
 export interface UserFieldTemplate {
-  id: string
-  name: string
-  description: string
+      const { FirebaseService: MainFirebaseService } = await import("./firebase")
+      return await MainFirebaseService.getAllUsers()
   fields: CustomField[]
   categories: string[]
   userId: string
   createdAt: string
   updatedAt: string
-}
-
-export interface Product {
-  id: string
-  name: string
+      const { FirebaseService: MainFirebaseService } = await import("./firebase")
+      return await MainFirebaseService.updateUser(userId, updates)
   description: string
   price: number
   currency: string
   images: string[]
   userId: string
-  catalogueIds: string[]
-  customFields: Record<string, any>
+      const { FirebaseService: MainFirebaseService } = await import("./firebase")
+      return await MainFirebaseService.deleteUser(userId)
   tags: string[]
   category: string
   status: "active" | "draft" | "archived"
-  createdAt: string
-  updatedAt: string
-  catalogues: string[]
-  products: string[]
-}
-
-export interface User {
-  id: string
-  name: string
-  email: string
-  status: "active" | "suspended" | "inactive"
-  role: string
-  joinDate: string
-  lastActive: string
-  catalogues: string[]
-  products: string[]
-}
-
-export interface Catalogue {
-  id: string
-  name: string
-  description: string
-  userId: string
-  productIds: string[]
-  isPublic: boolean
-  shareUrl: string
-  createdAt: string
-  updatedAt: string
-}
-
-// Field Template Store
-class FieldTemplateStore {
-  private templates: UserFieldTemplate[] = []
-
-  createTemplate(template: Omit<UserFieldTemplate, "id" | "createdAt" | "updatedAt">): UserFieldTemplate {
-    const newTemplate: UserFieldTemplate = {
-      ...template,
-      id: `template_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
-    this.templates.push(newTemplate)
-    return newTemplate
-  }
-
-  getTemplatesByUserId(userId: string): UserFieldTemplate[] {
-    return this.templates.filter((template) => template.userId === userId)
-  }
-
-  getTemplateById(id: string): UserFieldTemplate | undefined {
-    return this.templates.find((template) => template.id === id)
-  }
-
-  updateTemplate(id: string, updates: Partial<UserFieldTemplate>): UserFieldTemplate | null {
-    const index = this.templates.findIndex((template) => template.id === id)
-    if (index === -1) return null
-
-    this.templates[index] = {
-      ...this.templates[index],
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    }
-    return this.templates[index]
-  }
-
-  deleteTemplate(id: string): boolean {
-    const index = this.templates.findIndex((template) => template.id === id)
-    if (index === -1) return false
-
-    this.templates.splice(index, 1)
-    return true
-  }
-
-  getAllTemplates(): UserFieldTemplate[] {
-    return this.templates
-  }
-}
-
-// Admin Data Store
-class AdminDataStore {
-  private users: User[] = [
-    {
-      id: "user_1",
-      name: "John Doe",
-      email: "john@example.com",
-      status: "active",
-      role: "user",
-      joinDate: "2024-01-15",
-      lastActive: "2024-01-20",
-      catalogues: ["cat_1", "cat_2"],
-      products: ["prod_1", "prod_2", "prod_3"],
-    },
-    {
-      id: "user_2",
-      name: "Jane Smith",
-      email: "jane@example.com",
-      status: "active",
-      role: "user",
-      joinDate: "2024-01-10",
-      lastActive: "2024-01-19",
-      catalogues: ["cat_3"],
-      products: ["prod_4"],
-    },
-  ]
-  private products: Product[] = []
-  private catalogues: Catalogue[] = []
-
-  async getStats() {
-    try {
-      const firebaseStats = await FirebaseService.getAdminStats()
-      return {
-        totalUsers: firebaseStats.totalUsers || 0,
         activeUsers: firebaseStats.activeUsers || 0,
         totalCatalogues: firebaseStats.totalCatalogues || 0,
-        totalProducts: firebaseStats.totalProducts || 0,
-        recentActivity: Array.isArray(firebaseStats.recentActivity) ? firebaseStats.recentActivity : [],
-      }
-    } catch (error) {
-      console.error("Failed to get stats from Firebase, using fallback:", error)
-      const activeUsers = Array.isArray(this.users)
-        ? this.users.filter((user) => {
-            const lastActive = new Date(user.lastActive || new Date().toISOString())
-            const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-            return lastActive > thirtyDaysAgo
-          }).length
-        : 0
+      const { FirebaseService: MainFirebaseService } = await import("./firebase")
+      return await MainFirebaseService.getAdminStats()
 
-      const recentActivity = Array.isArray(this.users)
-        ? this.users.slice(0, 5).map((user) => ({
-            user: user.name || user.email || "Unknown User",
-            action: "Recent activity",
-            time: new Date(user.lastActive || new Date().toISOString()).toLocaleDateString(),
-          }))
-        : []
-
-      return {
-        totalUsers: Array.isArray(this.users) ? this.users.length : 0,
-        activeUsers,
-        totalCatalogues: Array.isArray(this.catalogues) ? this.catalogues.length : 0,
-        totalProducts: Array.isArray(this.products) ? this.products.length : 0,
-        recentActivity,
-      }
-    }
-  }
-
-  // User Management
-  createUser(user: Omit<User, "id">): User {
-    const newUser: User = {
-      ...user,
-      id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      catalogues: user.catalogues || [],
-      products: user.products || [],
-    }
-    this.users.push(newUser)
-    return newUser
-  }
-
-  getAllUsers(): User[] {
-    try {
-      // Try to get from Firebase first, but don't await to keep it synchronous
+  static async ensureSchemaExists() {
       FirebaseService.getAllUsers()
         .then((firebaseUsers) => {
           if (Array.isArray(firebaseUsers) && firebaseUsers.length > 0) {
@@ -285,50 +128,6 @@ class AdminDataStore {
   }
 
   // Catalogue Management
-  createCatalogue(catalogue: Omit<Catalogue, "id">): Catalogue {
-    const newCatalogue: Catalogue = {
-      ...catalogue,
-      id: `catalogue_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    }
-    this.catalogues.push(newCatalogue)
-    return newCatalogue
-  }
-
-  getAllCatalogues(): Catalogue[] {
-    return Array.isArray(this.catalogues) ? this.catalogues : []
-  }
-
-  getCataloguesByUserId(userId: string): Catalogue[] {
-    return Array.isArray(this.catalogues) ? this.catalogues.filter((catalogue) => catalogue.userId === userId) : []
-  }
-
-  getCatalogueById(id: string): Catalogue | undefined {
-    return Array.isArray(this.catalogues) ? this.catalogues.find((catalogue) => catalogue.id === id) : undefined
-  }
-
-  updateCatalogue(id: string, updates: Partial<Catalogue>): Catalogue | null {
-    if (!Array.isArray(this.catalogues)) return null
-
-    const index = this.catalogues.findIndex((catalogue) => catalogue.id === id)
-    if (index === -1) return null
-
-    this.catalogues[index] = {
-      ...this.catalogues[index],
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    }
-    return this.catalogues[index]
-  }
-
-  deleteCatalogue(id: string): boolean {
-    if (!Array.isArray(this.catalogues)) return false
-
-    const index = this.catalogues.findIndex((catalogue) => catalogue.id === id)
-    if (index === -1) return false
-
-    this.catalogues.splice(index, 1)
-    return true
-  }
 }
 
 // Export singleton instances
@@ -343,21 +142,13 @@ export const catalogueStore = {
   createCatalogue: (catalogue: Omit<Catalogue, "id">) => adminDataStore.createCatalogue(catalogue),
   updateCatalogue: (id: string, updates: Partial<Catalogue>) => adminDataStore.updateCatalogue(id, updates),
   deleteCatalogue: (id: string) => adminDataStore.deleteCatalogue(id),
+      // Delegate to the main FirebaseService
 }
-
-export const productStore = {
-  getProducts: () => adminDataStore.getAllProducts(),
-  getProductById: (id: string) => adminDataStore.getProductById(id),
-  getProductsByUserId: (userId: string) => adminDataStore.getProductsByUserId(userId),
-  createProduct: (product: Omit<Product, "id">) => adminDataStore.createProduct(product),
-  updateProduct: (id: string, updates: Partial<Product>) => adminDataStore.updateProduct(id, updates),
-  deleteProduct: (id: string) => adminDataStore.deleteProduct(id),
-}
-
+      const { FirebaseService: MainFirebaseService } = await import("./firebase")
 export const userStore = {
+      return await MainFirebaseService.createUser(userData)
   getUsers: () => adminDataStore.getAllUsers(),
   getUserById: (id: string) => adminDataStore.getUserById(id),
   createUser: (user: Omit<User, "id">) => adminDataStore.createUser(user),
+      const { FirebaseService: MainFirebaseService } = await import("./firebase")
   updateUser: (id: string, updates: Partial<User>) => adminDataStore.updateUser(id, updates),
-  deleteUser: (id: string) => adminDataStore.deleteUser(id),
-}
